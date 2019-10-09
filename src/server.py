@@ -20,13 +20,16 @@ class Handler(LineOnlyReceiver):
             for user in self.factory.clients:
                 if user is not self:
                     user.sendLine(message.encode())
+                self.factory.new_message(message.encode())
         else:
             if message.startswith('login:'):
                 login = message.replace('login:', '')
                 if login not in [client.login for client in self.factory.clients]:
-                    print(f'New user {self.login}')
                     self.login = login
+                    print(f'New user {self.login}')
                     self.sendLine(f'Welcome, {self.login}!'.encode())
+                    for message in self.factory.send_history():
+                        self.sendLine(message)
                 else:
                     self.sendLine('This login is already in use!'.encode())
                     self.transport.loseConnection()
@@ -41,12 +44,22 @@ class Handler(LineOnlyReceiver):
 class Server(ServerFactory):
     protocol = Handler
     clients: set
+    messages: list
 
     def __init__(self):
         self.clients = set()
+        self.messages = list()
 
     def startFactory(self):
         print('Server started')
+
+    def send_history(self):
+        return self.messages
+
+    def new_message(self, message):
+        if len(self.messages) > 10:
+            self.messages.pop(0)
+        self.messages.append(message)
 
 
 reactor.listenTCP(7410, Server())
