@@ -22,9 +22,14 @@ class Handler(LineOnlyReceiver):
                     user.sendLine(message.encode())
         else:
             if message.startswith('login:'):
-                self.login = message.replace('login:', '')
-                print(f'New user {self.login}')
-                self.sendLine(f'Welcome, {self.login}!'.encode())
+                login = message.replace('login:', '')
+                if login not in [client.login for client in self.factory.clients]:
+                    print(f'New user {self.login}')
+                    self.login = login
+                    self.sendLine(f'Welcome, {self.login}!'.encode())
+                else:
+                    self.sendLine('This login is already in use!'.encode())
+                    self.transport.loseConnection()
             else:
                 self.sendLine('Wrong login'.encode())
 
