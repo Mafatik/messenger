@@ -18,8 +18,7 @@ class Handler(LineOnlyReceiver):
         if self.login is not None:
             message = f'<{self.login}>: {message}'
             for user in self.factory.clients:
-                if user is not self:
-                    user.sendLine(message.encode())
+                user.sendLine(message.encode())
                 self.factory.new_message(message.encode())
         else:
             if message.startswith('login:'):
