@@ -26,6 +26,6 @@ class Ui_MainWindow(object):
     def retranslateUi(self, main_window):
         _translate = QtCore.QCoreApplication.translate
         main_window.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.plainTextEdit.setPlaceholderText(_translate("MainWindow", "Connecting to the server ..."))
+        self.plainTextEdit.setPlaceholderText(_translate("MainWindow", "type login:<your_login to authorize>))
         self.lineEdit.setPlaceholderText(_translate("MainWindow", "enter the message"))
         self.pushButton.setText(_translate("MainWindow", "send"))
